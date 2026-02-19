@@ -92,4 +92,35 @@ public class DataRetriever {
         return results;
     }
 
+    public VoteSummary computeVoteSummary() {
+
+        DBConnection dbConnection = new DBConnection();
+
+        String sql = """
+        SELECT
+            COUNT(*) FILTER (WHERE vote_type = 'VALID'),
+            COUNT(*) FILTER (WHERE vote_type = 'BLANK'),
+            COUNT(*) FILTER (WHERE vote_type = 'NULL')
+        FROM vote
+        """;
+
+        try (Connection connection = dbConnection.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            if (rs.next()) {
+                return new VoteSummary(
+                        rs.getLong(1),
+                        rs.getLong(2),
+                        rs.getLong(3)
+                );
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return new VoteSummary(0, 0, 0);
+    }
+
 }

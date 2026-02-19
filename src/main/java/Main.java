@@ -5,6 +5,8 @@ public class Main {
 
 //        System.out.println(dataRetriever.countVotesByType());
 
-        System.out.println(dataRetriever.countValidVotesByCandidate());
+//        System.out.println(dataRetriever.countValidVotesByCandidate());
+
+        System.out.println(dataRetriever.computeVoteSummary());
     }
 }

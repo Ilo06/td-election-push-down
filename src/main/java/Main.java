@@ -3,7 +3,8 @@ public class Main {
         DataRetriever dataRetriever = new DataRetriever();
 //        System.out.println(dataRetriever.countAllVotes());
 
-        System.out.println(dataRetriever.countVotesByType());
+//        System.out.println(dataRetriever.countVotesByType());
 
+        System.out.println(dataRetriever.countValidVotesByCandidate());
     }
 }

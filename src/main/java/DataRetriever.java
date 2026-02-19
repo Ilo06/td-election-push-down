@@ -2,6 +2,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class DataRetriever {
@@ -54,4 +55,41 @@ public class DataRetriever {
             throw new RuntimeException(e);
         }
     }
+
+    public List<CandidateVoteCount> countValidVotesByCandidate() {
+
+        DBConnection dbConnection = new DBConnection();
+
+        String sql = """
+        SELECT c.name, COUNT(v.id)
+        FROM candidate c
+        LEFT JOIN vote v
+            ON v.candidate_id = c.id
+            AND v.vote_type = 'VALID'
+        GROUP BY c.name
+        ORDER BY c.name
+        """;
+
+        List<CandidateVoteCount> results = new ArrayList<>();
+
+        try (Connection connection = dbConnection.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                results.add(
+                        new CandidateVoteCount(
+                                rs.getString(1),
+                                rs.getLong(2)
+                        )
+                );
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return results;
+    }
+
 }

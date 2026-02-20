@@ -150,4 +150,31 @@ public class DataRetriever {
         return 0.0;
     }
 
+    public ElectionResult findWinner() {
+        String sql = """
+                  SELECT c.name, COUNT(v.id)
+                        FROM candidate c
+                        JOIN vote v ON v.candidate_id = c.id
+                        WHERE v.vote_type = 'VALID'
+                        GROUP BY c.name
+                        ORDER BY COUNT(v.id) DESC
+                        LIMIT 1
+                        """;
+
+        try (
+                Connection connection = new DBConnection().getConnection();
+                PreparedStatement ps = connection.prepareStatement(sql);
+                ResultSet rs = ps.executeQuery();
+        ) {
+            if (rs.next()) {
+                return new ElectionResult(
+                        rs.getString(1),
+                        rs.getLong(2)
+                );
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return null;
+    }
 }

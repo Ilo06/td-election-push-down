@@ -9,6 +9,7 @@ public class Main {
 
 //        System.out.println(dataRetriever.computeVoteSummary());
 
-        System.out.println(dataRetriever.computeTurnoutRate());
+//        System.out.println(dataRetriever.computeTurnoutRate());
+        System.out.println(dataRetriever.findWinner());
     }
 }

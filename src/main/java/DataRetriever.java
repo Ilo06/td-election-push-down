@@ -123,4 +123,31 @@ public class DataRetriever {
         return new VoteSummary(0, 0, 0);
     }
 
+
+    public double computeTurnoutRate() {
+
+        DBConnection dbConnection = new DBConnection();
+
+        String sql = """
+        SELECT
+            (COUNT(DISTINCT voter_id)::double precision
+            / (SELECT COUNT(*) FROM voter))*100
+        FROM vote
+        """;
+
+        try (Connection connection = dbConnection.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            if (rs.next()) {
+                return rs.getDouble(1);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return 0.0;
+    }
+
 }
